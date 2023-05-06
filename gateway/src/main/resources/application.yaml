@@ -25,7 +25,7 @@ spring:
             provider: keycloak-provider
             scope: openid
             client-id: gateway-client
-            client-secret: JX89Es2PcDKmIM1VamAPbQMKGuC7vpWd
+            client-secret: YgbnDWU23VIyamiOgiMFTbOu25TBok0V
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
 
