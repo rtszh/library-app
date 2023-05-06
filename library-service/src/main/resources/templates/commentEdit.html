@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit person</title>
+
+    <script>
+        function getBaseUri() {
+            const splitBaseUriArray = document.baseURI.split('/')
+
+            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/'
+        }
+
+        function createParagraphWithSpan(string) {
+            const paragraphElement = document.createElement('p')
+            const spanElement = document.createElement('span')
+
+            spanElement.textContent = string
+            paragraphElement.appendChild(spanElement)
+
+            return paragraphElement
+        }
+
+        function appendChildren(rootNode, childrenNodesArray) {
+            for (const childNode of childrenNodesArray) {
+                rootNode.appendChild(childNode)
+            }
+        }
+
+        function fetchCommentData(bookId, orderNumber) {
+            const currentComment = document.getElementById("current-comment")
+
+            currentComment.innerHTML = ""
+
+            const baseUri = getBaseUri()
+
+            fetch(baseUri + "api/v1/books/" + bookId + "/comments/" + orderNumber)
+                .then(rawResponse => rawResponse.json())
+                .then(comment => {
+
+                    const content = comment.content
+                    const orderNumber = comment.orderNumber
+
+                    const contentParagraphElement = createParagraphWithSpan('Content: ' + content)
+                    const orderNumberParagraphElement = createParagraphWithSpan('Order number: ' + orderNumber)
+
+                    appendChildren(
+                        currentComment,
+                        [contentParagraphElement, orderNumberParagraphElement]
+                    )
+                })
+
+        }
+
+        function updateComment(bookId, orderNumber) {
+            const commentContent = document.getElementById("comment-content-input")
+
+            const comment = {
+                content: commentContent.value
+            }
+
+            const baseUri = getBaseUri()
+
+            fetch(baseUri + "api/v1/books/" + bookId + "/comments/" + orderNumber, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(comment)
+            })
+                .then(rawResponse => rawResponse.json())
+                .then(() => {
+                    fetchCommentData(bookId, orderNumber)
+                })
+        }
+
+    </script>
+</head>
+<body>
+
+<a th:href="@{/books/{id}(id = ${bookId})}">
+    <button type="button">Back to book list</button>
+</a>
+
+<h3>Current comment data:</h3>
+<div id="current-comment">
+</div>
+
+<script th:inline="javascript">
+    const bookId = /*[[${bookId}]]*/
+    const orderNumber = /*[[${commentOrderNumber}]]*/
+        fetchCommentData(bookId, orderNumber)
+</script>
+
+<h3>Update comment:</h3>
+<form>
+    <div class="row">
+        <label for="comment-content-input">New content:</label>
+        <input id="comment-content-input" name="content" type="text"/>
+    </div>
+
+    <div class="row">
+        <button type="button" th:attr="onclick=|updateComment('${bookId}', '${commentOrderNumber}')|">Save</button>
+    </div>
+</form>
+</body>
+</html>

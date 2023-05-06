@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  library:
+    build:
+      context: .
+      target: production
+    #      target: development
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+    environment:
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGO_DATABASE=book_db
+      - MONGO_USERNAME=root
+      - MONGO_PASSWORD=root
+    volumes:
+      - ./:/app
+      - maven_repo:/root/.m2
+    networks:
+      - nw
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: arm64v8/mongo
+    ports:
+      - "27020:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/etc/mongo
+    networks:
+      - nw
+volumes:
+  mongo_data:
+  maven_repo:
+  mongo_config:
+networks:
+  nw:
