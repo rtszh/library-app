@@ -26,8 +26,7 @@ public class SecurityConfig {
                 .oauth2Login() // to redirect to oauth2 login page.
                 .and()
                 .logout()
-                .logoutSuccessHandler(handler)
-        ;
+                .logoutSuccessHandler(handler);
 
         return http.build();
     }
