@@ -11,27 +11,10 @@ import org.springframework.security.web.server.authentication.logout.ServerLogou
 @Configuration
 public class SecurityConfig {
 
-//	@Bean
-//	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-//		http
-//				.authorizeExchange()
-//				.pathMatchers("/actuator/**", "/")
-//				.permitAll()
-//				.and()
-//				.authorizeExchange()
-//				.anyExchange()
-//				.authenticated()
-//				.and()
-//				.oauth2Login() // to redirect to oauth2 login page.
-//				.and()
-//				.logout();
-//
-//		return http.build();
-//	}
-
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, ServerLogoutSuccessHandler handler) {
         http
+                .csrf().disable()
                 .authorizeExchange()
                 .pathMatchers("/actuator/**", "/", "/logout.html")
                 .permitAll()
@@ -55,9 +38,8 @@ public class SecurityConfig {
         OidcClientInitiatedServerLogoutSuccessHandler oidcLogoutSuccessHandler =
                 new OidcClientInitiatedServerLogoutSuccessHandler(repository);
 
-        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}/logout.html");
+        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("{baseUrl}");
 
         return oidcLogoutSuccessHandler;
     }
-
 }
