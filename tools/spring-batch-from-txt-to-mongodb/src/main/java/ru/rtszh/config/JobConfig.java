@@ -6,16 +6,13 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.data.MongoItemWriter;
-import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import ru.rtszh.batch.processors.LinesProcessor;
 import ru.rtszh.batch.readers.LinesReader;
-import ru.rtszh.batch.writers.PagesWriter;
-import ru.rtszh.domain.Page;
+import ru.rtszh.batch.writers.batch_book.BookWriter;
+import ru.rtszh.batch.writers.batch_pages.PagesWriter;
 import ru.rtszh.repository.BookRepository;
 import ru.rtszh.repository.PageRepository;
 
@@ -28,10 +25,9 @@ public class JobConfig {
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
     @Autowired
-    private AppProperties properties;
-
+    private AppProperties appProperties;
     @Autowired
-    private MongoTemplate mongoTemplate;
+    private BookProperties bookProperties;
 
     @Autowired
     private BookRepository bookRepository;
@@ -40,12 +36,20 @@ public class JobConfig {
     private PageRepository pageRepository;
 
     @Bean
-    public Job migrateBooks() {
-        return jobBuilderFactory.get("migrateBooksJob")
+    public Job exportPages() {
+        return jobBuilderFactory.get("exportPagesJob")
                 .incrementer(new RunIdIncrementer())
                 .start(readLines())
                 .next(processLines())
-                .next(writeDataToDb())
+                .next(writePagesToDb())
+                .build();
+    }
+
+    @Bean
+    public Job exportBook() {
+        return jobBuilderFactory.get("exportBookJob")
+                .incrementer(new RunIdIncrementer())
+                .start(writeBookToDb())
                 .build();
     }
 
@@ -65,35 +69,40 @@ public class JobConfig {
     }
 
     @Bean
-    protected Step writeDataToDb() {
-        return stepBuilderFactory.get("writeDataToDb")
+    protected Step writePagesToDb() {
+        return stepBuilderFactory.get("writePagesToDb")
                 .tasklet(pagesWriter())
+                .build();
+    }
+
+    @Bean
+    protected Step writeBookToDb() {
+        return stepBuilderFactory.get("writeBookToDb")
+                .tasklet(bookWriter())
                 .build();
     }
 
     // readers
     @Bean
     public LinesReader linesReader() {
-        return new LinesReader(properties);
+        return new LinesReader(appProperties);
     }
 
     // processors
     @Bean
     public LinesProcessor linesProcessor() {
-        return new LinesProcessor(properties.getPageSize());
+        return new LinesProcessor(appProperties.getPageSize());
     }
 
     // writers
     @Bean
     public PagesWriter pagesWriter() {
-        return new PagesWriter(properties, bookRepository, pageRepository);
+        return new PagesWriter(appProperties, bookRepository, pageRepository);
     }
 
     @Bean
-    public MongoItemWriter<Page> bookWriter() {
-        return new MongoItemWriterBuilder<Page>()
-                .collection("book1")
-                .template(mongoTemplate)
-                .build();
+    public BookWriter bookWriter() {
+        return new BookWriter(bookProperties, bookRepository);
     }
+
 }

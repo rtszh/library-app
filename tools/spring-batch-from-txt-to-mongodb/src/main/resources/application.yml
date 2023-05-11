@@ -4,8 +4,8 @@ spring:
 
   batch:
     job:
-#      enabled: false
-      enabled: true
+      enabled: false
+#      enabled: true
 
   shell:
     interactive:
@@ -22,5 +22,12 @@ spring:
 
 app:
   input-file: ./input
-  book-name: "Kapitanskaya dochka"
+  book-name: "Mertvye dushi"
   page-size: 4700
+
+book:
+  title: "Mertvye dushi"
+  authors:
+    - Gogol
+  genres:
+    - classic

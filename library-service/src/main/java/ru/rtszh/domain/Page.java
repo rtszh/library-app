@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 @Document
 public class Page {
     @Id

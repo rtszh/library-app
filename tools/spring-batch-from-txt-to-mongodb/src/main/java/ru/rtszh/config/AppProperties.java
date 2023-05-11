@@ -11,5 +11,4 @@ public class AppProperties {
     private String inputFile;
     private String bookName;
     private int pageSize;
-
 }

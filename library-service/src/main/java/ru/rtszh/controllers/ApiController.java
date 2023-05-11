@@ -1,5 +1,6 @@
 package ru.rtszh.controllers;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.rtszh.dto.BookDto;
 import ru.rtszh.dto.BookUpdateDto;
@@ -40,16 +41,19 @@ public class ApiController {
         return bookService.getBookById(id);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/books")
     public BookDto addBook(@RequestBody BookDto bookDto) {
         return bookService.insertBook(bookDto);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/books/{id}")
     public void deleteBook(@PathVariable String id) {
         bookService.deleteBookById(id);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/books")
     public BookDto updateBook(@RequestBody BookUpdateDto bookUpdateDto) {
         return bookService.updateBook(bookUpdateDto);

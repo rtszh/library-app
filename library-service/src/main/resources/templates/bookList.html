@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8"/>
     <title>List of all books</title>
-
-
     <script>
+        function getBaseUri() {
+            const splitBaseUriArray = document.baseURI.split('/')
+
+            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/'
+        }
+
         function fillAuthors(authors) {
             const authorsArray = []
 
@@ -26,7 +30,9 @@
 
         function deleteBook(bookId) {
 
-            fetch('/api/v1/books/' + bookId, {
+            const baseUri = getBaseUri()
+
+            fetch(baseUri + 'api/v1/books/' + bookId, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
@@ -90,7 +96,10 @@
         }
 
         function fetchTableData(tableBody) {
-            fetch('/api/v1/books')
+
+            const baseUri = getBaseUri()
+
+            fetch(baseUri + 'api/v1/books')
                 .then(response => response.json())
                 .then(rows => {
                     tableBody.innerHTML = ''
@@ -117,7 +126,7 @@
                         rowElement.appendChild(
                             createCellElementFromNode(
                                 createLinkElementForUpdate(
-                                    '/books/' + bookId,
+                                    '/admin/books/' + bookId,
                                     'button',
                                     'Info/Edit'
                                 )
@@ -172,7 +181,9 @@
 
             console.log(JSON.stringify(book))
 
-            fetch("api/v1/books", {
+            const baseUri = getBaseUri()
+
+            fetch(baseUri + "api/v1/books", {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
