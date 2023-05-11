@@ -5,72 +5,6 @@
     <title>Edit person</title>
 
     <script>
-        function createCellElementFromString(cellString) {
-            const cellElement = document.createElement('td')
-            cellElement.textContent = cellString
-
-            return cellElement
-        }
-
-        function createCellElementFromNode(node) {
-            const cellElement = document.createElement('td')
-            cellElement.appendChild(node)
-
-            return cellElement
-        }
-
-        function createLinkElementForUpdate(href, buttonType, buttonValue) {
-            const linkElement = document.createElement('a')
-
-            linkElement.href = href
-
-            const buttonElement = createButton(buttonType, buttonValue)
-
-            linkElement.appendChild(buttonElement)
-
-            return linkElement
-        }
-
-        function createButton(buttonType, buttonValue) {
-            const buttonElement = document.createElement('button')
-            buttonElement.type = buttonType
-            buttonElement.innerText = buttonValue
-
-            return buttonElement
-        }
-
-        function createButtonForDeleteElement(bookId, orderNumber) {
-            const formElement = document.createElement('form')
-
-            const deleteFunction = "deleteComment('" + bookId + "', " + orderNumber + " )"
-
-            formElement.setAttribute("onclick", deleteFunction);
-
-            const divElement = document.createElement('div')
-            divElement.appendChild(
-                createButton('button', 'Delete')
-            )
-
-            formElement.appendChild(divElement)
-
-            return formElement
-
-        }
-
-        function deleteComment(bookId, orderNumber) {
-            const baseUri = getBaseUri()
-
-            fetch(baseUri + 'api/v1/books/' + bookId + '/comments/' + orderNumber, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(() => fetchCommentsTableData(document.getElementsByClassName('comments-body').item(0), bookId))
-
-        }
-
         function fillAuthors(authors) {
             const authorsArray = []
 
@@ -187,77 +121,11 @@
                 })
         }
 
-        function fetchCommentsTableData(tableBody, bookId) {
-            const baseUri = getBaseUri()
-
-            fetch(baseUri + 'api/v1/books/' + bookId + '/comments')
-                .then(response => response.json())
-                .then(rows => {
-                    tableBody.innerHTML = ''
-
-                    for (const row of rows) {
-                        const rowElement = document.createElement('tr')
-
-                        const content = row.content
-                        const time = row.time
-                        const orderNumber = row.orderNumber
-
-                        rowElement.appendChild(
-                            createCellElementFromString(orderNumber)
-                        )
-                        rowElement.appendChild(
-                            createCellElementFromString(content)
-                        )
-                        rowElement.appendChild(
-                            createCellElementFromString(time)
-                        )
-
-                        rowElement.appendChild(
-                            createCellElementFromNode(
-                                createLinkElementForUpdate(
-                                    baseUri + 'books/' + bookId + '/comments/' + orderNumber,
-                                    'button',
-                                    'Info/Edit'
-                                )
-                            )
-                        )
-
-                        rowElement.appendChild(
-                            createCellElementFromNode(
-                                createButtonForDeleteElement(bookId, orderNumber)
-                            )
-                        )
-
-                        tableBody.appendChild(rowElement)
-                    }
-
-                })
-        }
-
-        function saveComment(bookId) {
-            const content = document.getElementById("comment-input").value
-
-            const baseUri = getBaseUri()
-
-            fetch(baseUri + 'api/v1/books/' + bookId + '/comments', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(content)
-            })
-                .then(rawResponse => rawResponse.json())
-                .then(() => {
-                    fetchCommentsTableData(document.getElementsByClassName('comments-body').item(0), bookId)
-                })
-        }
-
     </script>
 </head>
 <body>
 
-<a href="bookList.html" th:href="@{/}">
+<a href="bookList.html" th:href="@{/admin/books}">
     <button type="button">Back to book list</button>
 </a>
 
@@ -292,35 +160,6 @@
     </div>
 </form>
 
-<h3>Book comments:</h3>
-<table class="books">
-    <thead>
-    <tr>
-        <th>Order number</th>
-        <th>Content</th>
-        <th>Date</th>
-    </tr>
-    </thead>
-    <tbody class="comments-body">
-    </tbody>
-</table>
-
-<h3>Insert new comment:</h3>
-
-<form>
-    <div class="row">
-        <label for="comment-input">enter comment:</label>
-        <input id="comment-input" name="content" type="text"/>
-    </div>
-
-    <div class="row">
-        <button type="button" th:attr="onclick=|saveComment('${bookId}')|">Save</button>
-    </div>
-</form>
-
-<script th:inline="javascript">
-    fetchCommentsTableData(document.getElementsByClassName('comments-body').item(0), bookId)
-</script>
 
 </body>
 </html>

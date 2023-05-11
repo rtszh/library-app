@@ -8,7 +8,8 @@ spring:
           uri: http://localhost:9191
           predicates:
             #            - Path=/api/v1/**
-            - Path=/books/**,/api/v1/**
+#            - Path=/books/**,/api/v1/**
+            - Path=/admin/**,/welcome,/api/v1/**
   security:
     oauth2:
       client:

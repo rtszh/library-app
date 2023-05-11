@@ -34,14 +34,11 @@ public class LinesReader implements Tasklet, StepExecutionListener {
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
-//        logger.info("start reading file: {}", properties.getInputFile());
         logger.info("start reading file: {}", properties.getInputFile());
     }
 
     @Override
     public RepeatStatus execute(StepContribution stepContribution, ChunkContext chunkContext) {
-
-//        Path filePath = Paths.get(properties.getInputFile());
 
         try (Stream<Path> paths = Files.walk(Paths.get(properties.getInputFile()))) {
             lines = paths
