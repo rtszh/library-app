@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit person</title>
+
+    <script>
+        function createParagraphWithSpan(string) {
+            const paragraphElement = document.createElement('p')
+            const spanElement = document.createElement('span')
+
+            spanElement.textContent = string
+            paragraphElement.appendChild(spanElement)
+
+            return paragraphElement
+        }
+
+        function appendChildren(rootNode, childrenNodesArray) {
+            for (const childNode of childrenNodesArray) {
+                rootNode.appendChild(childNode)
+            }
+        }
+
+        function getBaseUri() {
+            const splitBaseUriArray = document.baseURI.split('/')
+
+            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/'
+        }
+
+        function fetchBookData(bookId) {
+            const currentBook = document.getElementById("current-book")
+
+            currentBook.innerHTML = ""
+
+            const baseUri = getBaseUri()
+
+            fetch(baseUri + "api/v1/books/" + bookId)
+                .then(rawResponse => rawResponse.json())
+                .then(book => {
+                    const titleParagraphElement = createParagraphWithSpan('Title: ' + book.title)
+
+                    appendChildren(
+                        currentBook,
+                        [titleParagraphElement]
+                    )
+                })
+
+        }
+
+        function fetchBookText(bookId, currentPage) {
+            const currentBookText = document.getElementById("book-text")
+
+            currentBookText.innerHTML = ""
+
+            const baseUri = getBaseUri()
+
+            fetch(baseUri + "api/v1/books/" + bookId + "/text?" + new URLSearchParams({
+                page: currentPage
+            }))
+                .then(rawResponse => rawResponse.json())
+                .then(page => {
+                    const divElement = document.createElement('div')
+
+                    const textElement = formatText(page[0].text)
+
+                    divElement.innerHTML = textElement
+
+                    appendChildren(
+                        currentBookText,
+                        [divElement]
+                    )
+                })
+        }
+
+        function formatText(text) {
+            const regex = /\n/g
+
+            const newText = text.replaceAll(regex, "<br/>")
+
+            return newText
+        }
+
+    </script>
+</head>
+<body>
+
+<a href="bookList.html" th:href="@{/}">
+    <button type="button">Back to book list</button>
+</a>
+
+<h3>Current book data:</h3>
+<div id="current-book">
+</div>
+
+<script th:inline="javascript">
+    const bookId = /*[[${bookId}]]*/
+
+        fetchBookData(bookId)
+</script>
+
+<div id="book-text" style="margin-top: 20px; ">
+
+</div>
+
+<script th:inline="javascript">
+    // const bookId = /*[[${bookId}]]*/
+    const currentPage = /*[[${currentPage}]]*/
+
+    fetchBookText(bookId, currentPage)
+
+</script>
+
+<div class="pagination">
+    <ul>
+        <li th:if="${currentPage > 2}">
+            <a th:href="@{/books/{id}/text(id=${bookId}, page=1)}" th:text="1"></a>
+        </li>
+        <li th:if="${currentPage > 2}">
+            <span th:text="..."></span>
+        </li>
+        <li th:if="${currentPage > 1}">
+            <a th:href="@{/books/{id}/text(id=${bookId}, page=${currentPage - 1})}" th:text="${currentPage - 1}"></a>
+        </li>
+        <li class="current">
+            <span th:text="${currentPage}"></span>
+        </li>
+        <li th:if="${totalPages - currentPage >= 1}">
+            <a th:href="@{/books/{id}/text(id=${bookId}, page=${currentPage + 1})}" th:text="${currentPage + 1}"></a>
+        </li>
+        <li th:if="${totalPages - currentPage > 2}">
+            <span th:text="..."></span>
+        </li>
+        <li th:if="${totalPages - currentPage >= 2}">
+            <a th:href="@{/books/{id}/text(id=${bookId}, page=${totalPages})}" th:text="${totalPages}"></a>
+        </li>
+    </ul>
+</div>
+
+</body>
+</html>
+
