@@ -1,0 +1,26 @@
+spring:
+  main:
+    allow-circular-references: true
+
+  batch:
+    job:
+#      enabled: false
+      enabled: true
+
+  shell:
+    interactive:
+      enabled: true
+
+  data:
+    mongodb:
+      authentication-database: admin
+      username: ${MONGO_USERNAME:root}
+      password: ${MONGO_PASSWORD:root}
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PORT:27017}
+      database: ${MONGO_DATABASE:library-service}
+
+app:
+  input-file: ./input
+  book-name: "Kapitanskaya dochka"
+  page-size: 4700

@@ -77,3 +77,59 @@ docker-compose -f docker-compose.yaml up
         - password: password
         - authorities: ADMIN (ROLE_ADMIN)
 - после происходит переадресация на _library-service_
+
+#### 4. Экспорт книг в MongoDB с помощью _Spring Batch_-скрипта
+- книги загружаются постранично в _MongoDB_ с использованием _Spring batch_-скрипта;
+- сущность страницы `Page` выглядит следующим образом:
+
+```java
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document
+public class Page {
+    @Id
+    private String id;
+
+    private String text;
+
+    private int chapter;
+
+    private int pageNumber;
+
+    @DBRef
+    private Book bookId;
+
+    // getters and setters
+}
+```
+
+- таким образом, из _txt_-файла можно экспортировать данные в _MongoDB_, в результате чего каждая страница книги будет хранится как отдельный `Document` в _MongoDB_;
+- все страницы всех книг лежат в одной коллекции;
+- принадлежность страницы к определенной книге определяется с помощью `@DBRef`;
+
+#### 4.1. Подготовка данных и настройка скрипта для экспорта страниц книги
+- необходимо уточнить следующие параметры в _application.yml_:
+  - `input-file` - это папка, в которой лежат все файлы, из которых состоит книга;
+    - каждый _txt_-файл внутри папки `input-file` - это глава (_chapter_) в книге;
+    - если в книге всего одна глава (или нет глав), то можно сложить всю книгу в один _txt_-файл;
+    - каждый _txt_-файл разбивается на страницы (_page_) - сущности, в которых количество символов равно параметру `page-size`;
+  - `book-name` - название (_title_) книги. Подразумевается, что эта книга (сущность `Book`) уже содержится в БД _MongoDB_, поэтому скрипт сможет найти в книгу в БД по _title_;
+  - `page-size` - количество символов на одной странице
+```yaml
+app:
+  input-file: ./input
+  book-name: "Kapitanskaya dochka"
+  page-size: 4700
+```
+
+<details><summary>Пример работы скрипта экспорта данных</summary>
+
+1. Предположим, что в нашей книге две главы. Поэтому в пути `input`, лежит два _txt_-файла;
+2. Размер **Файла1** - 10000 символов, **файла2** - 9000 символов;
+3. Скрипт сделает так:
+   1. для **файла1** разобьет его на 3 страницы - 4700, 4700, 600;
+   2. для **файла2** - на 2 страницы - 4700, 4300;
+4. в итоге, в БД _MongoDB_ будет хранится 5 страниц: 3 страницы для _chapter1_ и 2 страницы для _chapter2_;
+</details>
