@@ -22,6 +22,4 @@ public class Book {
     private List<Author> authors;
 
     private List<Genre> genres;
-
-    private List<Comment> comments;
 }

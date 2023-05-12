@@ -8,4 +8,10 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = "ru.rtszh.repository")
 @EnableMongock
 public class MongoConfig {
+
+//    for using @transactional it's need to start mongodb as replica set
+//    @Bean
+//    MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
+//        return new MongoTransactionManager(dbFactory);
+//    }
 }

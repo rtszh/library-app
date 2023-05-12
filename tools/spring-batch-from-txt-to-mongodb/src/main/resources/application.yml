@@ -22,11 +22,11 @@ spring:
 
 app:
   input-file: ./input
-  book-name: "Mertvye dushi"
+  book-name: "Mertvye dushi1"
   page-size: 4700
 
 book:
-  title: "Mertvye dushi"
+  title: "Mertvye dushi1"
   authors:
     - Gogol
   genres:

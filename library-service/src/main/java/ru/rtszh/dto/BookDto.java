@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.NonNull;
 
 import java.util.List;
 
@@ -20,7 +19,5 @@ public class BookDto {
     List<AuthorDto> authorsDto;
     @JsonProperty("genres")
     List<GenreDto> genresDto;
-    @NonNull
-    List<CommentDto> commentsDto;
 
 }

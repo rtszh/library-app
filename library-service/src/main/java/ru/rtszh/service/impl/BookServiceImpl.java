@@ -6,18 +6,22 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import ru.rtszh.domain.Author;
 import ru.rtszh.domain.Book;
-import ru.rtszh.domain.Comment;
 import ru.rtszh.domain.Genre;
-import ru.rtszh.dto.*;
+import ru.rtszh.dto.AuthorDto;
+import ru.rtszh.dto.BookDto;
+import ru.rtszh.dto.BookUpdateDto;
+import ru.rtszh.dto.GenreDto;
 import ru.rtszh.exceptions.BookNotFoundException;
 import ru.rtszh.exceptions.IncorrectInputDataException;
 import ru.rtszh.repository.BookRepository;
 import ru.rtszh.service.BookService;
+import ru.rtszh.service.PageService;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.nonNull;
 
 
 @Service
@@ -28,10 +32,12 @@ public class BookServiceImpl implements BookService {
     private static final String FALLBACK_METHOD_BOOK_BY_ID = "fallbackBookById";
 
     private final BookRepository bookRepository;
+    private final PageService pageService;
     private final ModelMapper mapper;
 
-    public BookServiceImpl(BookRepository bookRepository, ModelMapper mapper) {
+    public BookServiceImpl(BookRepository bookRepository, PageService pageService, ModelMapper mapper) {
         this.bookRepository = bookRepository;
+        this.pageService = pageService;
         this.mapper = mapper;
     }
 
@@ -61,7 +67,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @CircuitBreaker(name = CIRCUIT_BREAKER_NAME)
+//    @Transactional - need to start mongo as replica set
     public void deleteBookById(String id) {
+        pageService.deleteAllPagesByBookId(id);
         bookRepository.deleteById(id);
     }
 
@@ -107,13 +115,6 @@ public class BookServiceImpl implements BookService {
                 .collect(Collectors.toList());
         currentBook.setGenres(genres);
 
-        if (nonNull(bookUpdateDto.getCommentsDto()) && !bookUpdateDto.getCommentsDto().isEmpty()) {
-            List<Comment> comments = bookUpdateDto.getCommentsDto().stream()
-                    .map(commentDto -> mapper.map(commentDto, Comment.class))
-                    .collect(Collectors.toList());
-            currentBook.setComments(comments);
-        }
-
         var savedEntity = bookRepository.save(currentBook);
 
         return toDto(savedEntity);
@@ -157,15 +158,6 @@ public class BookServiceImpl implements BookService {
             );
         }
 
-        if (Objects.nonNull(book.getComments())) {
-            bookDto.setCommentsDto(
-                    mapper.map(book.getComments(), new TypeToken<List<CommentDto>>() {
-                    }.getType())
-            );
-        } else {
-            bookDto.setCommentsDto(new ArrayList<>());
-        }
-
         return bookDto;
     }
 
@@ -181,7 +173,6 @@ public class BookServiceImpl implements BookService {
                 .title("N/A")
                 .authorsDto(Collections.emptyList())
                 .genresDto(Collections.emptyList())
-                .commentsDto(Collections.emptyList())
                 .build();
     }
 

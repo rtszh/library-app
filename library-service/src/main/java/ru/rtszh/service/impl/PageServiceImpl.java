@@ -2,19 +2,16 @@ package ru.rtszh.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.rtszh.domain.Book;
 import ru.rtszh.domain.Page;
-import ru.rtszh.dto.*;
-import ru.rtszh.exceptions.BookNotFoundException;
-import ru.rtszh.repository.BookRepository;
+import ru.rtszh.dto.PageDto;
 import ru.rtszh.repository.PageRepository;
 import ru.rtszh.service.PageService;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,17 +23,22 @@ public class PageServiceImpl implements PageService {
 
 
     @Override
-    public List<PageDto> findPagesByBookId(String id, int page, int size) {
+    public List<PageDto> findPagesByBookId(String bookId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        List<Page> pages = pageRepository.findByBookId(id, pageable);
+        List<Page> pages = pageRepository.findByBookId(bookId, pageable);
 
         return toDto(pages);
     }
 
     @Override
-    public int getPagesCount(String id) {
-        return pageRepository.countAllByBookId(id);
+    public int getPagesCount(String bookId) {
+        return pageRepository.countAllByBookId(bookId);
+    }
+
+    @Override
+    public void deleteAllPagesByBookId(String bookId) {
+        pageRepository.deleteAllByBookId(bookId);
     }
 
     private List<PageDto> toDto(Collection<Page> pages) {
