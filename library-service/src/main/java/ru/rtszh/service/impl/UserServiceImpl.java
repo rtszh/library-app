@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void deleteDublicates(List<User> users) {
-        for (int i = 1; i < users.size() - 1; i++) {
+        for (int i = 1; i < users.size(); i++) {
             userRepository.delete(users.get(i));
         }
     }

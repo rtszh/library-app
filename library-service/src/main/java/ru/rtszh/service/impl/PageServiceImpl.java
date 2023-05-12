@@ -21,7 +21,6 @@ public class PageServiceImpl implements PageService {
     private final PageRepository pageRepository;
     private final ModelMapper mapper;
 
-
     @Override
     public List<PageDto> findPagesByBookId(String bookId, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -48,7 +47,6 @@ public class PageServiceImpl implements PageService {
     }
 
     private PageDto toDto(Page page) {
-
         return mapper.map(page, PageDto.class);
     }
 

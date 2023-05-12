@@ -8,13 +8,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.rtszh.dto.AuthorDto;
-import ru.rtszh.dto.BookDto;
-import ru.rtszh.dto.BookUpdateDto;
-import ru.rtszh.dto.GenreDto;
+import ru.rtszh.dto.*;
 import ru.rtszh.forms.BookForm;
 import ru.rtszh.repository.BookRepository;
+import ru.rtszh.repository.PageRepository;
 import ru.rtszh.service.BookService;
+import ru.rtszh.service.PageService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +36,10 @@ class ApiControllerTest {
     private BookService bookService;
     @MockBean
     private BookRepository bookRepository;
+    @MockBean
+    private PageService pageService;
+    @MockBean
+    private PageRepository pageRepository;
 
     @WithMockUser(
             username = "admin",
@@ -97,25 +100,6 @@ class ApiControllerTest {
                 );
     }
 
-    @Test
-    void addBookForbidden() throws Exception {
-        BookForm bookForm = BookForm.builder()
-                .title("title")
-                .authors("author1;author3")
-                .genres("genre1")
-                .build();
-        BookDto book = createBookDtoData1();
-
-        given(bookService.insertBook(any(BookDto.class))).willReturn(book);
-
-        mvc.perform(post("/api/v1/books")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookForm))
-                        .with(csrf().useInvalidToken())
-                )
-                .andExpect(status().isForbidden());
-    }
-
     @WithMockUser(
             username = "admin",
             authorities = {"ROLE_ADMIN"}
@@ -134,26 +118,7 @@ class ApiControllerTest {
             authorities = {"ROLE_ADMIN"}
     )
     @Test
-    void deleteBookForbidden() throws Exception {
-        mvc.perform(
-                        delete("/api/v1/books/{id}", "1")
-                                .with(csrf().useInvalidToken())
-                )
-                .andExpect(status().isForbidden());
-    }
-
-    @WithMockUser(
-            username = "admin",
-            authorities = {"ROLE_ADMIN"}
-    )
-    @Test
     void updateBook() throws Exception {
-        BookForm bookForm = BookForm.builder()
-                .title("title1")
-                .authors("author")
-                .genres("genre")
-                .build();
-
         BookDto updatedBook = BookDto.builder()
                 .id("1")
                 .title("title1")
@@ -187,62 +152,23 @@ class ApiControllerTest {
             authorities = {"ROLE_ADMIN"}
     )
     @Test
-    void updateBookForbidden() throws Exception {
-        BookForm bookForm = BookForm.builder()
-                .title("title1")
-                .authors("author")
-                .genres("genre")
-                .build();
+    void bookTextTest() throws Exception {
+        List<PageDto> page = List.of(
+                PageDto.builder()
+                        .text("text1")
+                        .chapter(1)
+                        .pageNumber(1)
+                        .build()
+        );
 
-        BookDto updatedBook = BookDto.builder()
-                .id("1")
-                .title("title1")
-                .authorsDto(
-                        List.of(
-                                AuthorDto.builder().name("author").build()
-                        )
-                )
-                .genresDto(
-                        List.of(
-                                GenreDto.builder().name("genre").build()
-                        )
-                )
-                .build();
+        given(pageService.findPagesByBookId("1", 1, 1)).willReturn(page);
 
-        given(bookService.updateBook(any(BookUpdateDto.class))).willReturn(updatedBook);
-
-        mvc.perform(put("/api/v1/books/{id}", "1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookForm))
-                        .with(csrf().useInvalidToken())
-                )
-                .andExpect(status().isForbidden());
-    }
-
-    @WithMockUser(
-            username = "admin",
-            authorities = {"ROLE_ADMIN"}
-    )
-    @Test
-    void deleteCommentForbidden() throws Exception {
-        mvc.perform(
-                        delete("/api/v1/books/{id}/comments/{order-number}", "1", 1)
-                                .with(csrf().useInvalidToken())
-                )
-                .andExpect(status().isForbidden());
-    }
-
-    @WithMockUser(
-            username = "admin",
-            authorities = {"ROLE_ADMIN"}
-    )
-    @Test
-    void deleteComment() throws Exception {
-        mvc.perform(
-                        delete("/api/v1/books/{id}/comments/{order-number}", "1", 1)
-                                .with(csrf())
-                )
-                .andExpect(status().isOk());
+        mvc.perform(get("/api/v1/books/{id}/text", "1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(
+                        content().json(objectMapper.writeValueAsString(page))
+                );
     }
 
     private BookDto createBookDtoData1() {

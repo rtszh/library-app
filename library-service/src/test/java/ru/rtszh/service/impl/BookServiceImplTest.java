@@ -14,6 +14,7 @@ import ru.rtszh.dto.BookDto;
 import ru.rtszh.dto.BookUpdateDto;
 import ru.rtszh.dto.GenreDto;
 import ru.rtszh.repository.BookRepository;
+import ru.rtszh.service.PageService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ class BookServiceImplTest {
     private ModelMapper modelMapper;
     @MockBean
     private BookRepository bookRepository;
+    @MockBean
+    private PageService pageService;
 
     @Test
     void getAllBooks() {
