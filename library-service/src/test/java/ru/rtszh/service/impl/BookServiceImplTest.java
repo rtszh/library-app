@@ -36,13 +36,13 @@ class BookServiceImplTest {
 
     @Test
     void getAllBooks() {
-        Book book1 = Book.builder().title("title1").authors(new ArrayList<>()).genres(new ArrayList<>()).comments(new ArrayList<>()).build();
-        Book book2 = Book.builder().title("title2").authors(new ArrayList<>()).genres(new ArrayList<>()).comments(new ArrayList<>()).build();
-        Book book3 = Book.builder().title("title3").authors(new ArrayList<>()).genres(new ArrayList<>()).comments(new ArrayList<>()).build();
+        Book book1 = Book.builder().title("title1").authors(new ArrayList<>()).genres(new ArrayList<>()).build();
+        Book book2 = Book.builder().title("title2").authors(new ArrayList<>()).genres(new ArrayList<>()).build();
+        Book book3 = Book.builder().title("title3").authors(new ArrayList<>()).genres(new ArrayList<>()).build();
 
-        BookDto bookDto1 = BookDto.builder().title("title1").authorsDto(new ArrayList<>()).genresDto(new ArrayList<>()).commentsDto(new ArrayList<>()).build();
-        BookDto bookDto2 = BookDto.builder().title("title2").authorsDto(new ArrayList<>()).genresDto(new ArrayList<>()).commentsDto(new ArrayList<>()).build();
-        BookDto bookDto3 = BookDto.builder().title("title3").authorsDto(new ArrayList<>()).genresDto(new ArrayList<>()).commentsDto(new ArrayList<>()).build();
+        BookDto bookDto1 = BookDto.builder().title("title1").authorsDto(new ArrayList<>()).genresDto(new ArrayList<>()).build();
+        BookDto bookDto2 = BookDto.builder().title("title2").authorsDto(new ArrayList<>()).genresDto(new ArrayList<>()).build();
+        BookDto bookDto3 = BookDto.builder().title("title3").authorsDto(new ArrayList<>()).genresDto(new ArrayList<>()).build();
 
         List<Book> books = List.of(book1, book2, book3);
         List<BookDto> expectedBooksDto = List.of(bookDto1, bookDto2, bookDto3);
@@ -57,7 +57,7 @@ class BookServiceImplTest {
 
     @Test
     void getBookById() {
-        Book expectedBook = Book.builder().id("1").title("title1").authors(new ArrayList<>()).genres(new ArrayList<>()).comments(new ArrayList<>()).build();
+        Book expectedBook = Book.builder().id("1").title("title1").authors(new ArrayList<>()).genres(new ArrayList<>()).build();
 
         when(bookRepository.findById(eq("1")))
                 .thenReturn(Optional.of(expectedBook));
@@ -104,7 +104,6 @@ class BookServiceImplTest {
                                         .build())
                                 .collect(Collectors.toList())
                 )
-                .commentsDto(new ArrayList<>())
                 .build();
 
         assertThat(actualBookDto).isEqualTo(expectedBookDto);
@@ -167,7 +166,6 @@ class BookServiceImplTest {
                                 GenreDto.builder().name("genre1").build()
                         )
                 )
-                .commentsDto(new ArrayList<>())
                 .build();
     }
 
@@ -182,7 +180,6 @@ class BookServiceImplTest {
                                 GenreDto.builder().name("updatedGenre").build()
                         )
                 )
-                .commentsDto(new ArrayList<>())
                 .build();
     }
 

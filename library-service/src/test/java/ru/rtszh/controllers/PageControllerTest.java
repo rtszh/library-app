@@ -37,17 +37,4 @@ class PageControllerTest {
                 .andExpect(content().contentType("text/html;charset=UTF-8"));
     }
 
-    @WithMockUser(
-            username = "admin",
-            authorities = {"ROLE_ADMIN"}
-    )
-    @Test
-    void editComment() throws Exception {
-        mvc.perform(get("/books/{id}/comments/{order-number}", "1", 2))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("bookId", "1"))
-                .andExpect(model().attribute("commentOrderNumber", 2))
-                .andExpect(content().contentType("text/html;charset=UTF-8"));
-    }
-
 }

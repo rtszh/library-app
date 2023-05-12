@@ -25,7 +25,7 @@ public class PageController {
     public String welcomePage(Authentication authentication) {
 
         if (isAdminAuthority(authentication.getAuthorities())) {
-            return "bookList";
+            return "adminBookList";
         } else {
             return "hello";
         }
@@ -34,7 +34,7 @@ public class PageController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/admin/books")
     public String getAllBooks() {
-        return "bookList";
+        return "adminBookList";
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -44,18 +44,6 @@ public class PageController {
         model.addAttribute("bookId", id);
 
         return "bookEdit";
-    }
-
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @GetMapping("/admin/books/{id}/comments/{order-number}")
-    public String editComment(@PathVariable("id") String id,
-                              @PathVariable("order-number") int orderNumber,
-                              Model model) {
-
-        model.addAttribute("bookId", id);
-        model.addAttribute("commentOrderNumber", orderNumber);
-
-        return "commentEdit";
     }
 
     @GetMapping("/books/{id}/text")
@@ -86,12 +74,4 @@ public class PageController {
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(authority -> authority.equals("ROLE_ADMIN"));
     }
-//
-//    @GetMapping("/user")
-//    public String getUserPage(Authentication authentication, Model model) {
-//
-//
-//
-//
-//    }
 }
