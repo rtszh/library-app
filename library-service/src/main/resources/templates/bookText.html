@@ -84,7 +84,7 @@
 </head>
 <body>
 
-<a href="adminBookList.html" th:href="@{/}">
+<a th:href="@{/books/}">
     <button type="button">Back to book list</button>
 </a>
 
@@ -103,7 +103,6 @@
 </div>
 
 <script th:inline="javascript">
-    // const bookId = /*[[${bookId}]]*/
     const currentPage = /*[[${currentPage}]]*/
 
     fetchBookText(bookId, currentPage)

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <script>
+        function getBaseUri() {
+            const splitBaseUriArray = document.baseURI.split('/')
+
+            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/'
+        }
+
+        function fillAuthors(authors) {
+            const authorsArray = []
+
+            for (let author of authors) {
+                authorsArray.push(author.name)
+            }
+            return authorsArray
+        }
+
+        function fillGenres(genres) {
+            const genresArray = []
+
+            for (let genre of genres) {
+                genresArray.push(genre.name)
+            }
+            return genresArray
+        }
+
+        function createCellElementFromString(cellString) {
+            const cellElement = document.createElement('td')
+            cellElement.textContent = cellString
+
+            return cellElement
+        }
+
+        function createCellElementFromNode(node) {
+            const cellElement = document.createElement('td')
+            cellElement.appendChild(node)
+
+            return cellElement
+        }
+
+        function createLinkElement(href, buttonType, buttonValue) {
+            const linkElement = document.createElement('a')
+
+            linkElement.href = href
+
+            const buttonElement = createButton(buttonType, buttonValue)
+
+            linkElement.appendChild(buttonElement)
+
+            return linkElement
+        }
+
+        function createButton(buttonType, buttonValue) {
+            const buttonElement = document.createElement('button')
+            buttonElement.type = buttonType
+            buttonElement.innerText = buttonValue
+
+            return buttonElement
+        }
+
+        function fetchTableData(tableBody) {
+
+            const baseUri = getBaseUri()
+
+            fetch(baseUri + 'api/v1/books')
+                .then(response => response.json())
+                .then(rows => {
+                    tableBody.innerHTML = ''
+
+                    for (const row of rows) {
+                        const rowElement = document.createElement('tr')
+
+                        const title = row.title
+                        const authors = fillAuthors(row.authors)
+                        const genres = fillGenres(row.genres)
+                        const bookId = row.id
+
+
+                        rowElement.appendChild(
+                            createCellElementFromString(title)
+                        )
+                        rowElement.appendChild(
+                            createCellElementFromString(authors.join(';'))
+                        )
+                        rowElement.appendChild(
+                            createCellElementFromString(genres.join(';'))
+                        )
+
+                        rowElement.appendChild(
+                            createCellElementFromNode(
+                                createLinkElement(
+                                    '/books/' + bookId,
+                                    'button',
+                                    'Info'
+                                )
+                            )
+                        )
+
+                        rowElement.appendChild(
+                            createCellElementFromNode(
+                                createLinkElement(
+                                    '/books/' + bookId + '/text',
+                                    'button',
+                                    'Read book'
+                                )
+                            )
+                        )
+
+                        tableBody.appendChild(rowElement)
+                    }
+
+                })
+        }
+
+    </script>
+</head>
+<body>
+<h3>Book list:</h3>
+
+<table class="books">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Authors</th>
+        <th>Genres</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<br/>
+
+<script>
+    fetchTableData(document.getElementsByClassName('books').item(0).querySelector('tbody'))
+</script>
+
+</body>
+</html>
