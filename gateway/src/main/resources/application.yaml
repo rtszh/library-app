@@ -9,7 +9,7 @@ spring:
           predicates:
             #            - Path=/api/v1/**
 #            - Path=/books/**,/api/v1/**
-            - Path=/admin/**,/welcome,/api/v1/**
+            - Path=/admin/**,/welcome,/api/v1/**,/books/**
   security:
     oauth2:
       client:

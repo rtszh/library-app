@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit person</title>
+
+    <script>
+        function fillAuthors(authors) {
+            const authorsArray = []
+
+            for (let author of authors) {
+                authorsArray.push(author.name)
+            }
+            return authorsArray
+        }
+
+        function fillGenres(genres) {
+            const genresArray = []
+
+            for (let genre of genres) {
+                genresArray.push(genre.name)
+            }
+            return genresArray
+        }
+
+        function createParagraphWithSpan(string) {
+            const paragraphElement = document.createElement('p')
+            const spanElement = document.createElement('span')
+
+            spanElement.textContent = string
+            paragraphElement.appendChild(spanElement)
+
+            return paragraphElement
+        }
+
+        function appendChildren(rootNode, childrenNodesArray) {
+            for (const childNode of childrenNodesArray) {
+                rootNode.appendChild(childNode)
+            }
+        }
+
+        function getBaseUri() {
+            const splitBaseUriArray = document.baseURI.split('/')
+
+            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/'
+        }
+
+        function fetchBookData(bookId) {
+            const currentBook = document.getElementById("current-book")
+
+            currentBook.innerHTML = ""
+
+            const baseUri = getBaseUri()
+
+            fetch(baseUri + "api/v1/books/" + bookId)
+                .then(rawResponse => rawResponse.json())
+                .then(book => {
+                    const authors = fillAuthors(book.authors)
+                    const genres = fillGenres(book.genres)
+
+                    const titleParagraphElement = createParagraphWithSpan('Title: ' + book.title)
+                    const authorsParagraphElement = createParagraphWithSpan('Authors: ' + authors.join(';'))
+                    const genresParagraphElement = createParagraphWithSpan('Genres: ' + genres.join(';'))
+
+                    appendChildren(
+                        currentBook,
+                        [titleParagraphElement, authorsParagraphElement, genresParagraphElement]
+                    )
+                })
+
+        }
+
+    </script>
+</head>
+<body>
+
+<a th:href="@{/books}">
+    <button type="button">Back to book list</button>
+</a>
+
+<h3>Current book data:</h3>
+<div id="current-book">
+</div>
+
+<script th:inline="javascript">
+    const bookId = /*[[${bookId}]]*/
+        fetchBookData(bookId)
+</script>
+
+<a th:href="@{/books/{id}/text(id=${bookId})}">
+    <button type="button">Read book</button>
+</a>
+
+</body>
+</html>
+

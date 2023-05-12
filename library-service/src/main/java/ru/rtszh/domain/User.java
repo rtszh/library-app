@@ -1,23 +1,33 @@
 package ru.rtszh.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 
 @Document
 public class User {
     @Id
     private String id;
+
     private String username;
-    private List<UserBook> userBook;
+
+    private int stoppedAtPage;
+
+    //    @Indexed(name = "createdAtIndex", expireAfter = "7d")
+//    @Indexed(name = "createdAtIndex", expireAfter = "50s")
+    @Indexed(name = "createdAtIndex", expireAfter = "5m")
+    private LocalDateTime createdAt;
+
+    @DBRef
+    private Book bookId;
 }
