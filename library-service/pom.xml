@@ -18,10 +18,16 @@
         <maven.compiler.target>17</maven.compiler.target>
         <guava.version>31.1-jre</guava.version>
         <mongock.version>4.1.17</mongock.version>
-        <resilience4j.version>1.7.1</resilience4j.version>
+        <resilience4j.version>1.7.0</resilience4j.version>
+        <spring-cloud.version>2021.0.3</spring-cloud.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -118,6 +124,18 @@
         </dependency>
 
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

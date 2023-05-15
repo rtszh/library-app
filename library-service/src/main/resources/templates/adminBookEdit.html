@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Edit person</title>
+    <title>Admin - Edit book</title>
 
     <script>
         function fillAuthors(authors) {
@@ -42,7 +42,7 @@
         function getBaseUri() {
             const splitBaseUriArray = document.baseURI.split('/')
 
-            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/'
+            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/' + splitBaseUriArray[3] + '/'
         }
 
         function fetchBookData(bookId) {
@@ -125,7 +125,7 @@
 </head>
 <body>
 
-<a href="adminBookList.html" th:href="@{/admin/books}">
+<a th:href="@{/{service}/admin/books(service=${applicationName})}">
     <button type="button">Back to book list</button>
 </a>
 
