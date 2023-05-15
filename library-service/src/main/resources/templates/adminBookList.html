@@ -2,12 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>List of all books</title>
+    <title>Admin - List of all books</title>
     <script>
         function getBaseUri() {
             const splitBaseUriArray = document.baseURI.split('/')
 
-            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/'
+            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/' + splitBaseUriArray[3] + '/'
         }
 
         function fillAuthors(authors) {
@@ -126,7 +126,7 @@
                         rowElement.appendChild(
                             createCellElementFromNode(
                                 createLinkElementForUpdate(
-                                    '/admin/books/' + bookId,
+                                    baseUri + 'admin/books/' + bookId,
                                     'button',
                                     'Info/Edit'
                                 )

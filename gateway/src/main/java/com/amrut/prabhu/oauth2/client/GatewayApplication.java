@@ -5,10 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveUserDetailsServiceAutoConfiguration;
 
 @SpringBootApplication(exclude = ReactiveUserDetailsServiceAutoConfiguration.class)
-public class SpringOauth2ClientApplication {
+public class GatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringOauth2ClientApplication.class, args);
+        SpringApplication.run(GatewayApplication.class, args);
     }
 
 }

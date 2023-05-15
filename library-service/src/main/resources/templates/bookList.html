@@ -7,7 +7,7 @@
         function getBaseUri() {
             const splitBaseUriArray = document.baseURI.split('/')
 
-            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/'
+            return splitBaseUriArray[0] + '//' + splitBaseUriArray[2] + '/' + splitBaseUriArray[3] + '/'
         }
 
         function fillAuthors(authors) {
@@ -93,7 +93,7 @@
                         rowElement.appendChild(
                             createCellElementFromNode(
                                 createLinkElement(
-                                    '/books/' + bookId,
+                                    baseUri + 'books/' + bookId,
                                     'button',
                                     'Info'
                                 )
@@ -103,7 +103,7 @@
                         rowElement.appendChild(
                             createCellElementFromNode(
                                 createLinkElement(
-                                    '/books/' + bookId + '/text',
+                                    baseUri + 'books/' + bookId + '/text',
                                     'button',
                                     'Read book'
                                 )

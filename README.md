@@ -57,10 +57,13 @@ docker-compose -f docker-compose.yaml up
 
 </details>
 
-#### 2.2. Запуск _gateway_
+#### 2.2. Запуск _eureka_
 - пока что через `mvn spring-boot:run`
 
-#### 2.3. Запуск _library-service_
+#### 2.3. Запуск _gateway_
+- пока что через `mvn spring-boot:run`
+
+#### 2.4. Запуск _library-service_
 - пока что через `mvn spring-boot:run`
 
 #### 3. Тестирование работы

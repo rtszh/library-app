@@ -1,14 +1,15 @@
 package ru.rtszh.controllers;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.rtszh.config.SpringProperties;
 import ru.rtszh.service.PageService;
 import ru.rtszh.service.UserService;
 import ru.rtszh.utils.JwtUtils;
@@ -17,14 +18,17 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Controller
+@EnableConfigurationProperties(SpringProperties.class)
 public class PageController {
 
     private final PageService pageService;
     private final UserService userService;
+    private final SpringProperties springProperties;
 
-    public PageController(PageService pageService, UserService userService) {
+    public PageController(PageService pageService, UserService userService, SpringProperties springProperties) {
         this.pageService = pageService;
         this.userService = userService;
+        this.springProperties = springProperties;
     }
 
     @GetMapping("/welcome")
@@ -49,6 +53,7 @@ public class PageController {
     public String adminEditBook(@PathVariable String id, Model model) {
 
         model.addAttribute("bookId", id);
+        model.addAttribute("applicationName", springProperties.getName());
 
         return "adminBookEdit";
     }
@@ -63,6 +68,7 @@ public class PageController {
     public String editBook(@PathVariable String id, Model model) {
 
         model.addAttribute("bookId", id);
+        model.addAttribute("applicationName", springProperties.getName());
 
         return "bookInfo";
     }
@@ -85,6 +91,7 @@ public class PageController {
 
         model.addAttribute("currentPage", validPage);
         model.addAttribute("totalPages", totalPages);
+        model.addAttribute("applicationName", springProperties.getName());
 
         return "bookText";
     }

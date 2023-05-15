@@ -1,6 +1,7 @@
 .idea/
 *.iml
 *.log
+*.gz
 
 target/
 /spring-shell.log

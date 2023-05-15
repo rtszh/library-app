@@ -1,15 +1,21 @@
 spring:
+  application:
+    name: gateway
   cloud:
     gateway:
       default-filters:
         - TokenRelay
-      routes:
-        - id: library-resource-server
-          uri: http://localhost:9191
-          predicates:
-            #            - Path=/api/v1/**
-#            - Path=/books/**,/api/v1/**
-            - Path=/admin/**,/welcome,/api/v1/**,/books/**
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+#      routes:
+#        - id: library-resource-server
+#          uri: http://localhost:9191
+#          predicates:
+#            #            - Path=/api/v1/**
+#            #            - Path=/books/**,/api/v1/**
+#            - Path=/admin/**,/welcome,/api/v1/**,/books/**
   security:
     oauth2:
       client:
@@ -26,9 +32,16 @@ spring:
             provider: keycloak-provider
             scope: openid
             client-id: gateway-client
-            client-secret: BJM24lmKdqAOuN7tZUbSBgA5Uedy0qpS
+            client-secret: j1sqt2kUCytxHFPPQ7POVMUutOgevu3g
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
 
 # Enable these to debug the Authorization flow
 logging:
@@ -45,3 +58,6 @@ management:
     web:
       exposure:
         include: "*"
+
+app:
+  redirectService: library-service
