@@ -57,13 +57,44 @@ docker-compose -f docker-compose.yaml up
 
 </details>
 
-#### 2.2. Запуск _eureka_
+#### 2.2. Запуск _config-server_
 - пока что через `mvn spring-boot:run`
 
-#### 2.3. Запуск _gateway_
+#### 2.2.1. Запуск с использованием локальных _config_'ов
+
+- для того, чтобы запустить _config_'и с _localhost_ в _application.yml_ нужно указать:
+    - `profiles: native`
+    - для `native` указать `searchLocations`
+```yaml
+# !! settings for local configs from package 'resources/config'
+spring:
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: "[classpath:/, classpath:/config, classpath:/config/{application}, classpath:/config/{application}/{profile}]"
+```
+
+#### 2.2.2. Запуск с использованием _config_'ов из _git_
+```yaml
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/rtszh/library-app-configs/
+          search-paths: {application}
+```
+
+#### 2.3. Запуск _eureka_
 - пока что через `mvn spring-boot:run`
 
-#### 2.4. Запуск _library-service_
+#### 2.4. Запуск _gateway_
+- пока что через `mvn spring-boot:run`
+
+#### 2.5. Запуск _library-service_
 - пока что через `mvn spring-boot:run`
 
 #### 3. Тестирование работы
