@@ -1,75 +1,8 @@
 spring:
   application:
     name: library-service
-  data:
-    mongodb:
-      authentication-database: admin
-      username: ${MONGO_USERNAME:root}
-      password: ${MONGO_PASSWORD:root}
-      host: ${MONGO_HOST:localhost}
-      port: ${MONGO_PORT:27017}
-      database: ${MONGO_DATABASE:library-service}
-      auto-index-creation: true
-  #      database: ${MONGO_DATABASE:book_db}
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:8080/realms/library-realm/protocol/openid-connect/certs
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    register-with-eureka: true
-    fetch-registry: true
-
-mongock:
-  runner-type: "ApplicationRunner" # default
-  #runner-type: "InitializingBean"
-  change-logs-scan-package:
-    - ru.otus.spring.mongock.changelog
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "metrics, health, logfile"
-  endpoint:
-    logfile:
-      external_file: ./demo.log
-    health:
-      show-details: always
-
-logging:
-  file:
-    name: demo.log
-  level:
-    root: info
-    org:
-      springframework:
-        data:
-          mongodb:
-            core:
-              MongoTemplate: DEBUG
-
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
-        sliding-window-type: count_based
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 5
-        failureRateThreshold: 50
-        registerHealthIndicator: true
-        permittedNumberOfCallsInHalfOpenState: 3
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        waitDurationInOpenState: 5s
-        eventConsumerBufferSize: 10
-    instances:
-      bookService:
-        base-config: default
-      commentService:
-        base-config: default
-server:
-  port: 9191
+  profiles:
+    active: prod
+  config:
+    import: configserver:http://localhost:8888
+#    import: optional:configserver:http://localhost:8888

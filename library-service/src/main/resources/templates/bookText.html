@@ -112,25 +112,25 @@
 <div class="pagination">
     <ul>
         <li th:if="${currentPage > 2}">
-            <a th:href="@{/books/{id}/text(id=${bookId}, page=1)}" th:text="1"></a>
+            <a th:href="@{/{service}/books/{id}/text(service=${applicationName}, id=${bookId}, page=1)}" th:text="1"></a>
         </li>
         <li th:if="${currentPage > 2}">
             <span th:text="..."></span>
         </li>
         <li th:if="${currentPage > 1}">
-            <a th:href="@{/books/{id}/text(id=${bookId}, page=${currentPage - 1})}" th:text="${currentPage - 1}"></a>
+            <a th:href="@{/{service}/books/{id}/text(service=${applicationName}, id=${bookId}, page=${currentPage - 1})}" th:text="${currentPage - 1}"></a>
         </li>
         <li class="current">
             <span th:text="${currentPage}"></span>
         </li>
         <li th:if="${totalPages - currentPage >= 1}">
-            <a th:href="@{/books/{id}/text(id=${bookId}, page=${currentPage + 1})}" th:text="${currentPage + 1}"></a>
+            <a th:href="@{/{service}/books/{id}/text(service=${applicationName}, id=${bookId}, page=${currentPage + 1})}" th:text="${currentPage + 1}"></a>
         </li>
         <li th:if="${totalPages - currentPage > 2}">
             <span th:text="..."></span>
         </li>
         <li th:if="${totalPages - currentPage >= 2}">
-            <a th:href="@{/books/{id}/text(id=${bookId}, page=${totalPages})}" th:text="${totalPages}"></a>
+            <a th:href="@{/{service}/books/{id}/text(service=${applicationName}, id=${bookId}, page=${totalPages})}" th:text="${totalPages}"></a>
         </li>
     </ul>
 </div>
