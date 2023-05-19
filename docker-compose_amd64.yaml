@@ -1,0 +1,155 @@
+version: "3.9"
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:18.0.2
+    command:
+      - start-dev
+      - --import-realm
+      - --health-enabled=true
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./keycloak-config/:/opt/keycloak/data/import/
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/health/ready | grep UP || exit 1"
+      interval: 2s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    networks:
+      - nw
+    restart: always
+
+  mongodb:
+    image: amd64/mongo:6.0.5
+    ports:
+      - "27020:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/etc/mongo
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 2s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    networks:
+      - nw
+    restart: always
+
+  mongo_seed:
+    image: arm64v8/mongo:6.0.5
+    links:
+      - mongodb
+    volumes:
+      - ./mongo-seed:/mongo-seed
+    command:
+      /mongo-seed/import.sh
+    networks:
+      - nw
+
+  config-server:
+    build:
+      context: ./config-server
+    ports:
+      - "8888:8888"
+    environment:
+      - GIT_CONFIG_URI=https://github.com/rtszh/library-app-configs/
+    volumes:
+      - maven_repo:/root/.m2
+    healthcheck:
+      test: "curl --fail --silent localhost:8888/actuator/health | grep UP || exit 1"
+      interval: 2s
+      timeout: 3s
+      retries: 5
+      start_period: 3s
+    networks:
+      - nw
+    depends_on:
+      - mongodb
+    restart: always
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+    ports:
+      - "8761:8761"
+    volumes:
+      - ./:/app
+      - maven_repo:/root/.m2
+    networks:
+      - nw
+    depends_on:
+      config-server:
+        condition: service_healthy
+    restart: always
+
+  gateway:
+    build:
+      context: ./gateway
+    ports:
+      - "9090:9090"
+    environment:
+#      - KEYCLOAK_CLIENT_SECRET=G7WpoyMrog8q0ULugKNyhO78wm3GlUuo
+      - KEYCLOAK_CLIENT_SECRET=YgbnDWU23VIyamiOgiMFTbOu25TBok0V
+    volumes:
+      - ./:/app
+      - maven_repo:/root/.m2
+    healthcheck:
+      test: "curl --fail --silent localhost:8888/actuator/health | grep UP || exit 1"
+      interval: 2s
+      timeout: 3s
+      retries: 5
+      start_period: 2s
+    networks:
+      - nw
+    depends_on:
+      config-server:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    restart: always
+
+  library-service:
+    build:
+      context: ./library-service
+    ports:
+      - "9191:9191"
+    environment:
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGO_DATABASE=library-service
+      - MONGO_USERNAME=root
+      - MONGO_PASSWORD=root
+    volumes:
+      - ./:/app
+      - maven_repo:/root/.m2
+    healthcheck:
+      test: "curl --fail --silent localhost:9191/actuator/health | grep UP || exit 1"
+      interval: 2s
+      timeout: 3s
+      retries: 5
+      start_period: 2s
+    networks:
+      - nw
+    depends_on:
+      config-server:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  mongo_data:
+  mongo_config:
+  maven_repo:
+networks:
+  nw:

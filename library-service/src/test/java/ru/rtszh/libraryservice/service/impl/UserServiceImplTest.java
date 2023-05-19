@@ -17,7 +17,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = {UserServiceImpl.class, ModelMapper.class})
+@SpringBootTest(
+        classes = {UserServiceImpl.class, ModelMapper.class},
+        properties = {"spring.cloud.config.enabled=false"}
+)
 class UserServiceImplTest {
 
     @Autowired

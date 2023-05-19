@@ -1,0 +1,33 @@
+[{
+  "_id": {
+    "$oid": "6457e3866ebd872529f6ec48"
+  },
+  "title": "Kapitanskaya dochka",
+  "authors": [
+    {
+      "name": "Pushkin"
+    }
+  ],
+  "genres": [
+    {
+      "name": "Classic"
+    }
+  ],
+  "_class": "ru.rtszh.domain.Book"
+},{
+  "_id": {
+    "$oid": "645d0bcc7f2d6822851fe37c"
+  },
+  "title": "Mertvye dushi",
+  "authors": [
+    {
+      "name": "Gogol"
+    }
+  ],
+  "genres": [
+    {
+      "name": "classic"
+    }
+  ],
+  "_class": "ru.rtszh.domain.Book"
+}]

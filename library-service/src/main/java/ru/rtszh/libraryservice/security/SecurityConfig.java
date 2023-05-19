@@ -15,9 +15,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-//    private static final String ADMIN_AUTHORITY = "ROLE_ADMIN";
-//    private static final String USER_AUTHORITY = "ROLE_USER";
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -26,18 +23,6 @@ public class SecurityConfig {
                 .anyRequest()
                 .authenticated()
                 .and()
-//                .authorizeRequests((authorize) -> authorize
-//                        .antMatchers(HttpMethod.POST, "/api/v1/books").hasAuthority(ADMIN_AUTHORITY)
-//                        .antMatchers(HttpMethod.PUT, "/api/v1/books/*").hasAuthority(ADMIN_AUTHORITY)
-//                        .antMatchers(HttpMethod.DELETE, "/api/v1/books/*").hasAuthority(ADMIN_AUTHORITY)
-//                        .antMatchers("/").hasAnyAuthority(ADMIN_AUTHORITY, USER_AUTHORITY)
-//                        .antMatchers("/books/**").hasAnyAuthority(ADMIN_AUTHORITY, USER_AUTHORITY)
-//                        .antMatchers(HttpMethod.GET, "/api/v1/**").hasAnyAuthority(ADMIN_AUTHORITY, USER_AUTHORITY)
-//                        .antMatchers(HttpMethod.POST, "/api/v1/books/{id}/comments").hasAnyAuthority(ADMIN_AUTHORITY, USER_AUTHORITY)
-//                        .antMatchers(HttpMethod.PUT, "/api/v1/books/{id}/comments/*").hasAnyAuthority(ADMIN_AUTHORITY, USER_AUTHORITY)
-//                        .antMatchers(HttpMethod.DELETE, "/api/v1/books/{id}/comments/*").hasAnyAuthority(ADMIN_AUTHORITY, USER_AUTHORITY)
-//                        .antMatchers("/actuator/**").hasAuthority(ADMIN_AUTHORITY)
-//                )
                 .oauth2ResourceServer()
                 .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter()));
 

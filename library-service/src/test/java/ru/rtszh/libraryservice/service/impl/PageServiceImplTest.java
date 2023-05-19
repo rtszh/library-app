@@ -16,7 +16,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {PageServiceImpl.class, ModelMapper.class})
+@SpringBootTest(
+        classes = {PageServiceImpl.class, ModelMapper.class},
+        properties = {"spring.cloud.config.enabled=false"}
+)
 class PageServiceImplTest {
 
     @Autowired

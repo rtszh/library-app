@@ -6,7 +6,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.rtszh.libraryservice.repository.BookRepository;
 import ru.rtszh.libraryservice.domain.Author;
 import ru.rtszh.libraryservice.domain.Book;
 import ru.rtszh.libraryservice.domain.Genre;
@@ -14,6 +13,7 @@ import ru.rtszh.libraryservice.dto.AuthorDto;
 import ru.rtszh.libraryservice.dto.BookDto;
 import ru.rtszh.libraryservice.dto.BookUpdateDto;
 import ru.rtszh.libraryservice.dto.GenreDto;
+import ru.rtszh.libraryservice.repository.BookRepository;
 import ru.rtszh.libraryservice.service.PageService;
 
 import java.util.ArrayList;
@@ -25,7 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = {BookServiceImpl.class, ModelMapper.class})
+@SpringBootTest(
+        classes = {BookServiceImpl.class, ModelMapper.class},
+        properties = {"spring.cloud.config.enabled=false"}
+)
 class BookServiceImplTest {
 
     @Autowired

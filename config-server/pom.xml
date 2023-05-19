@@ -11,7 +11,7 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <artifactId>spring-cloud-config-server</artifactId>
+    <artifactId>config-server</artifactId>
 
     <properties>
         <spring-cloud-dependencies.version>2021.0.3</spring-cloud-dependencies.version>

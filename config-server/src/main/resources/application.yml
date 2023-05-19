@@ -13,7 +13,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/rtszh/library-app-configs/
+          uri: ${GIT_CONFIG_URI:https://github.com/rtszh/library-app-configs/}
           search-paths: {application}
 
 management:

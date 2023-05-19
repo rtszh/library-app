@@ -9,13 +9,39 @@
 - _Config server_
 - _Eureka_
 
-#### 2. Порядок запуска
+#### 2. Порядок запуска сервисов
+- чтобы запустить сервисы используется _docker-compose.yaml_ из директории _/library-app_:
+
+```shell
+docker-compose -f docker-compose_arm64.yaml up
+```
+
+#### 2.1. Настройки в _docker-compose.yaml_:
+- для корректной работы сервисов, нужно уточнить _KEYCLOAK_CLIENT_SECRET_
+
+```yaml
+services:
+  gateway:
+    environment:
+      - KEYCLOAK_CLIENT_SECRET=...
+```
+
+- _KEYCLOAK_CLIENT_SECRET_ задается в _keycloak_-админке
+
+- по умолчанию в файле `/keycloak-config/realm-export.json` указан тот же _client_secret_, что и в _docker_compose.yaml_;
+
+<details><summary>client-secret в keycloak-админке</summary>
+
+![](readme/scr2.png)
+
+</details>
+
 
 #### 2.1. Запуск _Keycloak_
 - запуск _docker-compose_ из директории _/library-app_:
 
 ```shell
-docker-compose -f docker-compose.yaml up
+docker-compose -f docker-compose_arm64.yaml up
 ```
 
 <details><summary>Импорт настроек и пользователей в Keycloak при запуске в Docker</summary>
@@ -188,5 +214,38 @@ app:
 - найти все страницы, которые относятся к заданной книге. Связь книги - через _DBRef_:
 
 ```mongodb-json-query
-db.page.find{ "bookId" : DBRef("book", ObjectId("645e050689209e0300682aa6")) } 
+db.page.find({ "bookId" : DBRef("book", ObjectId("645e050689209e0300682aa6")) }) 
+```
+
+#### 7. Экспорт всех колекций из _database_ в _MongoDB_
+- команду нужно выполнять в _shell_ (в терминале), а не в _MONGOSH_;
+  - https://stackoverflow.com/questions/31993168/cant-create-backup-mongodump-with-db-authentication-failed
+
+```shell
+mongodump -h localhost:27017 -d library-service -u root -p root -o library-service --authenticationDatabase admin
+```
+
+https://altimetrikpoland.medium.com/how-to-control-container-run-order-using-docker-compose-4a7b338b98f1
+
+1. Дальнейшие действия - нужно запустить сервисы 
+   2. gateway - зависит от keycloak
+   3. library-service - зависит от mongodb и keycloak
+   4. соответственно, нужно добавить healthcheck для keycloak и mongodb
+   5. для keycloak - как вариант можно просто собрать свой image, внутрь которого установить curl как сделано в config-server
+
+- Ссылка для healthcheck keycloak:
+https://www.keycloak.org/server/health#:~:text=You%20may%20use%20a%20simple,HTTP%20client%20for%20this%20purpose.&text=If%20the%20command%20returns%20with,on%20which%20endpoint%20you%20called.
+
+- keycloak нужно добавить в hosts
+
+- нужно записать, что необходимо обновлять secret'ы в config'ах 
+
+```
+
+NOTE To make Keycloak work in our local environment, we need to add the host entry 127.0.0.1 Keycloak to our hosts file. 
+If you are using Windows, you need to add the host entry at C:\Windows\System32\drivers\etc\hosts, 
+and if you are using Linux, the host file is at /etc/hosts. Why do we need that entry? 
+The containers can talk to each other using the network aliases or MAC addresses, but our Postman needs to use localhost
+to invoke the services.
+
 ```

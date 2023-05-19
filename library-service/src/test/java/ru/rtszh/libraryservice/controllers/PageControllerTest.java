@@ -15,7 +15,10 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(PageController.class)
+@WebMvcTest(
+        value = PageController.class,
+        properties = {"spring.cloud.config.enabled=false"}
+)
 class PageControllerTest {
     @Autowired
     private MockMvc mvc;
