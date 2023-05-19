@@ -1,7 +1,8 @@
 spring:
   application:
-    name: eureka-service
+    name: eureka-server
   profiles:
     active: prod
   config:
-    import: configserver:http://localhost:8888
+    import: configserver:http://config-server:8888
+#    import: configserver:http://localhost:8888

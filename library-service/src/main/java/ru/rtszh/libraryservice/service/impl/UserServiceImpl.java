@@ -3,9 +3,9 @@ package ru.rtszh.libraryservice.service.impl;
 import org.springframework.stereotype.Service;
 import ru.rtszh.libraryservice.domain.Book;
 import ru.rtszh.libraryservice.domain.User;
+import ru.rtszh.libraryservice.exceptions.BookNotFoundException;
 import ru.rtszh.libraryservice.repository.BookRepository;
 import ru.rtszh.libraryservice.repository.UserRepository;
-import ru.rtszh.libraryservice.exceptions.BookNotFoundException;
 import ru.rtszh.libraryservice.service.UserService;
 
 import java.time.LocalDateTime;

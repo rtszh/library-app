@@ -8,10 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.rtszh.dto.*;
 import ru.rtszh.libraryservice.dto.*;
 import ru.rtszh.libraryservice.repository.BookRepository;
-import ru.rtszh1.dto.*;
 import ru.rtszh.libraryservice.repository.PageRepository;
 import ru.rtszh.libraryservice.service.BookService;
 import ru.rtszh.libraryservice.service.PageService;
@@ -25,7 +23,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ApiController.class)
+@WebMvcTest(
+        value = ApiController.class,
+        properties = {"spring.cloud.config.enabled=false"}
+)
 class ApiControllerTest {
 
     @Autowired
