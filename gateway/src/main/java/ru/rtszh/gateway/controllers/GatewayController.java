@@ -1,11 +1,11 @@
 package ru.rtszh.gateway.controllers;
 
-import ru.rtszh.gateway.config.AppProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import ru.rtszh.gateway.config.AppProperties;
 
 @RequiredArgsConstructor
 
